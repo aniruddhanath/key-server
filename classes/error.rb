@@ -1,0 +1,2 @@
+class KeyNotFound < RuntimeError
+end
