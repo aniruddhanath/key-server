@@ -92,6 +92,8 @@ class Keys
     while !blocked_key.nil?
       puts blocked_key
       if  @keys_hash.has_key?(blocked_key) && @keys_hash[blocked_key][:status] == BLOCKED
+        # check if already present in @available_keys
+        @available_keys.push(blocked_key.to_sym) unless @available_keys.include?(blocked_key.to_sym)
         @keys_hash[blocked_key.to_sym] = { status: AVAILABLE }
       end
       blocked_key = @blocked_keys.shift
