@@ -10,22 +10,46 @@ post '/' do
 end
 
 get '/' do
-  keys.fetch.to_json
+  key = keys.fetch
+  if key.nil?
+    status 404
+    return
+  end
+  body key.to_json
+  status 200
 end
 
 put '/release/:key' do
-  keys.update(params[:key], 1)
-  status 200
+  begin
+    keys.update(params[:key], 1)
+  rescue KeyNotFound => err
+    body err.to_json
+    status 404
+  else
+    status 200
+  end
 end
 
 put '/keep-alive/:key' do
-  keys.update(params[:key])
-  status 200
+  begin
+    keys.update(params[:key])
+  rescue KeyNotFound => err
+    body err.to_json
+    status 404
+  else
+    status 200
+  end
 end
 
 delete '/:key' do
-  keys.delete(params[:key])
-  status 200
+  begin
+    keys.delete(params[:key])
+  rescue KeyNotFound => err
+    body err.to_json
+    status 404
+  else
+    status 200
+  end
 end
 
 def _every_n_seconds(n)
@@ -48,61 +72,3 @@ Thread.new do
     keys.release_keys
   }
 end
-
-# keys = Keys.new()
-# fetched_keys = []
-
-# keys.delete_if_expired
-
-# (1..10).each {
-#   keys.create
-# }
-
-# def condition_check(keys)
-#   keys.each do |key, status|
-#     puts "#{key} : #{status}"
-#   end
-# end
-
-# puts "after creation..."
-# condition_check(keys.keys_hash)
-# keys.get_available
-
-# puts "fetched first 2.."
-# (1..2).each {
-#   a = keys.fetch
-#   fetched_keys.push(a)
-#   puts a
-# }
-# condition_check(keys.keys_hash)
-# keys.get_available
-
-# keys.update(fetched_keys[0], 1)
-# puts "after updating.."
-# condition_check(keys.keys_hash)
-# keys.get_available
-
-# puts "again fetching 2"
-# (1..2).each {
-#   a = keys.fetch
-#   fetched_keys.push(a)
-#   puts a
-# }
-# condition_check(keys.keys_hash)
-# keys.get_available
-
-# k = keys.get_available[0]
-# puts "deleting #{k}..."
-# keys.delete(k)
-
-# condition_check(keys.keys_hash)
-# keys.get_available
-
-# puts "after deletion trying to fetch..."
-# a = keys.fetch
-# fetched_keys.push(a)
-# puts a
-# condition_check(keys.keys_hash)
-# keys.get_available
-
-# condition_check(keys.keys_hash)

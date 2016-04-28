@@ -32,13 +32,17 @@ class Keys
 
   public
   def create
-    key = ("browserstack_" + SecureRandom.hex).to_sym
+    key = ("BST_" + SecureRandom.hex + "_" +Time.now.to_i.to_s).to_sym
     @keys_hash[key] = { status: AVAILABLE }
     _add_to_available(key)
     Log.success("[ created #{key} : #{@keys_hash[key]} ]")
   end
 
   def fetch
+    if @available_keys.size == 0
+      return
+    end
+
     key = @available_keys.shift;
     while !_is_available?(key) && !key.nil?
       key = @available_keys.shift
