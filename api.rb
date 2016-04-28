@@ -21,7 +21,7 @@ end
 
 put '/release/:key' do
   begin
-    keys.update(params[:key], 1)
+    keys.update(params[:key], Keys::AVAILABLE)
   rescue KeyNotFound => err
     body err.to_json
     status 404

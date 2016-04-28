@@ -34,7 +34,7 @@ RSpec.describe Keys, "#check" do
     end
 
     it "releases the first key" do
-      keys.update(fetched_keys[0], 1)
+      keys.update(fetched_keys[0], Keys::AVAILABLE)
       expect(keys.keys_hash[fetched_keys[0].to_sym][:status]).to equal(1)
     end
 
